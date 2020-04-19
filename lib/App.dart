@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'ProductItem.dart';
+import 'cart_bloc.dart';
 import 'pages/BalancePage.dart';
 import 'pages/HomePage.dart';
 import 'pages/ShoppingCartPage.dart';
@@ -13,8 +18,19 @@ class _AppState extends State<App> {
   int _selectedPage = 0;
   final _pageOptions = [HomePage(), ShoppingCartPage()];
 
+  _readingCart() async {
+    final cartBloc = CartBloc();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = prefs.getString('products');
+    List list = json.decode(jsonString);
+    List<ProductItem> products =
+        list.map((e) => ProductItem.fromJson(e)).toList();
+    cartBloc.readingCartController.add(products);
+  }
+
   @override
   Widget build(BuildContext context) {
+    _readingCart();
     return MaterialApp(
         title: "MyApp",
         theme: ThemeData(

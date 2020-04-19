@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:bb/ProductItem.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
@@ -96,5 +97,23 @@ class Api {
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
     String encoded = stringToBase64.encode(credentials);
     return encoded;
+  }
+
+  static Future order(Map<String, dynamic> body) async {
+    var url = baseUrl + '/orderCreate';
+    HttpClient client = HttpClient();
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    HttpClientRequest request = await client.postUrl(Uri.parse(url));
+
+    request.headers.set('Content-type', 'application/json');
+    request.headers.set('Token', '3ac61eab-d819-4d4f-b024-6584187d8437');
+
+    //print(json.encode(body));
+    //(body['productList'] as List<ProductItem>);
+    request.write(json.encode(body));
+    HttpClientResponse response = await request.close();
+
+    return await response.transform(utf8.decoder).join();
   }
 }

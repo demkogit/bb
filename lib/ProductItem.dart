@@ -26,6 +26,12 @@ class ProductItem {
         '_id': _id,
       };
 
+  Map<String, dynamic> toPOSTJson() => <String, dynamic>{
+        'price': _price,
+        'count': _count,
+        'id': _id,
+      };
+
   String get name => _name;
   String get unit => _unit;
   String get imageURL => _imageURL;

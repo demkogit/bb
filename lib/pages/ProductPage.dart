@@ -1,4 +1,5 @@
 import 'package:bb/ProductItem.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../cart_bloc.dart';
@@ -21,6 +22,25 @@ class ProductPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              CachedNetworkImage(
+                imageUrl: _productItem.imageURL,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.red,
+                        BlendMode.colorBurn,
+                      ),
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.broken_image),
+              ),
               Text(
                 '${_productItem.name}',
                 style: TextStyle(fontWeight: FontWeight.bold),

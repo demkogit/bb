@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ProductCounter.dart';
 import 'ProductItem.dart';
@@ -41,22 +44,14 @@ class ProductCardWidget extends StatelessWidget {
                       //second item in the column is a transparent space of 20
                       CachedNetworkImage(
                         imageUrl: _product.imageURL,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
-                                Colors.red,
-                                BlendMode.colorBurn,
-                              ),
-                            ),
-                          ),
+                        placeholder: (context, url) => CircleAvatar(
+                          backgroundColor: Colors.grey[300],
+                          radius: 50,
                         ),
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.broken_image),
+                        imageBuilder: (context, image) => CircleAvatar(
+                          backgroundImage: image,
+                          radius: 50,
+                        ),
                       ),
                       Container(height: 10.0)
                     ],
@@ -79,7 +74,7 @@ class ProductCardWidget extends StatelessWidget {
                           child: Icon(Icons.add),
                           onPressed: () {
                             cartBloc.addtition.add(_product);
-
+                            _savingCart();
                             //pc.increase(_product);
                           },
                         )),
@@ -92,6 +87,7 @@ class ProductCardWidget extends StatelessWidget {
                           child: Icon(Icons.remove),
                           onPressed: () {
                             cartBloc.deletion.add(_product);
+                            _savingCart();
                             //pc.decrease(_product);
                           },
                         )),
@@ -165,5 +161,23 @@ class ProductCardWidget extends StatelessWidget {
         // ),
       ),
     );
+  }
+
+  Widget _sizedContainer(Widget child) {
+    return SizedBox(
+      width: 300.0,
+      height: 150.0,
+      child: Center(child: child),
+    );
+  }
+
+  _savingCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final cart = CartBloc();
+    var wtf = await cart.productList.first;
+    if (wtf.length > 0) {
+      print(wtf.length.toString());
+      await prefs.setString('products', json.encode(wtf));
+    }
   }
 }
