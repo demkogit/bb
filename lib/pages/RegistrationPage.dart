@@ -47,102 +47,109 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(""),
+        title: Text('Регистрация'),
       ),
       body: Center(
         child: Form(
           key: _formKey,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Имя'),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _name = value;
-                    });
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Номер телефона'),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _phone = value;
-                    });
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Пароль'),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _pass = value;
-                    });
-                  },
-                ),
-                DropdownButton<Map<String, dynamic>>(
-                  value: _selectedLocation,
-                  items: shopList.map((value) {
-                    return new DropdownMenuItem<Map<String, dynamic>>(
-                      value: value,
-                      child: new Text(value['name']),
-                    );
-                  }).toList(),
-                  onChanged: (newVal) {
-                    _selectedLocation = newVal;
-                   print(_selectedLocation);
-                  },
-                ),
-                RaisedButton(
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      //Отправка данных
-                      Api.registration(PostBody(
-                              data: Api.makeData(_phone, _token, _pass),
-                              name: _name,
-                              uid: device.deviceData['uid'],
-                              deviceName: device.deviceData['deviceName'],
-                              system: device.deviceData['system'],
-                              systemVersion:
-                                  device.deviceData['systemVersion']))
-                          .then((value) {
-                        //проверка ответа
-                        if (json.decode(value)['error']) {
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content:
-                                Text(json.decode(value)['errorDescription']),
-                            backgroundColor: Colors.red,
-                          ));
-                        } else {
-                          // тут нужно сохранить данные о пользователе и возвращаться на страницу логина
-
-                          Navigator.pop(context);
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Center(
+                      child: TextFormField(
+                        decoration: InputDecoration(labelText: 'Имя'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _name = value;
+                          });
+                        },
+                      ),
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Номер телефона'),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
                         }
-                      });
-                    } else {}
-                  },
-                  child: Text('Зарегистрироваться'),
-                ),
-              ]),
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _phone = value;
+                        });
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Пароль'),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _pass = value;
+                        });
+                      },
+                    ),
+                    DropdownButton<Map<String, dynamic>>(
+                      value: _selectedLocation,
+                      items: shopList.map((value) {
+                        return new DropdownMenuItem<Map<String, dynamic>>(
+                          value: value,
+                          child: new Text(value['name']),
+                        );
+                      }).toList(),
+                      onChanged: (newVal) {
+                        _selectedLocation = newVal;
+                        print(_selectedLocation);
+                      },
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          //Отправка данных
+                          Api.registration(PostBody(
+                                  data: Api.makeData(_phone, _token, _pass),
+                                  name: _name,
+                                  uid: device.deviceData['uid'],
+                                  deviceName: device.deviceData['deviceName'],
+                                  system: device.deviceData['system'],
+                                  systemVersion:
+                                      device.deviceData['systemVersion']))
+                              .then((value) {
+                            //проверка ответа
+                            if (json.decode(value)['error']) {
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                    json.decode(value)['errorDescription']),
+                                backgroundColor: Colors.red,
+                              ));
+                            } else {
+                              // тут нужно сохранить данные о пользователе и возвращаться на страницу логина
+
+                              Navigator.pop(context);
+                            }
+                          });
+                        } else {}
+                      },
+                      child: Text('Зарегистрироваться'),
+                    ),
+                  ]),
+            ),
+          ),
         ),
       ),
     );
