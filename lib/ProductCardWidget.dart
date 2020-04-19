@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,18 +27,37 @@ class ProductCardWidget extends StatelessWidget {
                   Column(
                     children: <Widget>[
                       //first element in the column is the white background (the Image.asset in your case)
-                      DecoratedBox(
+                      // DecoratedBox(
+                      //     decoration: BoxDecoration(
+                      //       image: new DecorationImage(
+                      //         image: new AssetImage('images/cat.jpg'),
+                      //         fit: BoxFit.cover,
+                      //       ),
+                      //     ),
+                      //     child: Container(
+                      //       width: 140.0,
+                      //       height: 90.0,
+                      //     )),
+                      //second item in the column is a transparent space of 20
+                      CachedNetworkImage(
+                        imageUrl: _product.imageURL,
+                        imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
-                            image: new DecorationImage(
-                              image: new AssetImage('images/cat.jpg'),
+                            image: DecorationImage(
+                              image: imageProvider,
                               fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                Colors.red,
+                                BlendMode.colorBurn,
+                              ),
                             ),
                           ),
-                          child: Container(
-                            width: 140.0,
-                            height: 90.0,
-                          )),
-                      //second item in the column is a transparent space of 20
+                        ),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.broken_image),
+                      ),
                       Container(height: 10.0)
                     ],
                   ),
@@ -80,7 +100,7 @@ class ProductCardWidget extends StatelessWidget {
                   ]),
                 ],
               ),
-              Expanded( child: Text(_product.name)),
+              Expanded(child: Text(_product.name)),
               // Text(
               //   _product.price.toString() + " ₽ / 1 " + _product.unit.toString(),
               //   style: TextStyle(fontWeight: FontWeight.bold),

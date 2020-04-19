@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'pages/BalancePage.dart';
 import 'pages/HomePage.dart';
-import 'pages/InfoPage.dart';
+import 'pages/ShoppingCartPage.dart';
 
 class App extends StatefulWidget {
   @override

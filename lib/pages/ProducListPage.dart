@@ -146,7 +146,7 @@ class _ProductListPageState extends State<ProductListPage> {
       } else {
         List<ProductItem> temp = new List();
         for (var item in jsonVal['result']) {
-          temp.add(ProductItem(item['name'], item['price'], item['id']));
+          temp.add(ProductItem(item['name'], item['price'], item['id'], item['imageURL']));
         }
 
         setState(() {
