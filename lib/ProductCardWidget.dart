@@ -101,7 +101,7 @@ class ProductCardWidget extends StatelessWidget {
               //   _product.price.toString() + " ₽ / 1 " + _product.unit.toString(),
               //   style: TextStyle(fontWeight: FontWeight.bold),
               // ),
-
+              Text('${_product.price} руб./1 ${_product.unit}'),
               StreamBuilder<List<ProductItem>>(
                   stream: cartBloc.productList,
                   initialData: new List<ProductItem>(),
