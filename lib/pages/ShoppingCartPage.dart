@@ -15,6 +15,8 @@ import '../PostBody.dart';
 import '../ProductItem.dart';
 
 class ShoppingCartPage extends StatelessWidget {
+  final GlobalKey _globalKey;
+  ShoppingCartPage(this._globalKey);
   @override
   Widget build(BuildContext context) {
     final cartBloc = CartBloc();
@@ -68,13 +70,18 @@ class ShoppingCartPage extends StatelessWidget {
                                   backgroundColor: Colors.red,
                                 ),
                               );
-                            }else{
+                            } else {
                               Scaffold.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Заказ отправлен!'),
                                   backgroundColor: Colors.green,
                                 ),
                               );
+                              final BottomNavigationBar navigationBar =
+                                  _globalKey.currentWidget;
+                              navigationBar.onTap(0);
+                              cartBloc.delete.add(ActionType.clear);
+                              _savingCart();
                             }
                           }),
                           child: Icon(
@@ -172,10 +179,10 @@ class ShoppingCartPage extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final cart = CartBloc();
     var wtf = await cart.productList.first;
-    if (wtf.length > 0) {
-      print(wtf.length.toString());
-      await prefs.setString('products', json.encode(wtf));
-    }
+    //if (wtf.length > 0) {
+    print(wtf.length.toString());
+    await prefs.setString('products', json.encode(wtf));
+    //}
   }
 }
 

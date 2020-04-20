@@ -16,7 +16,8 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _selectedPage = 0;
-  final _pageOptions = [HomePage(), ShoppingCartPage()];
+  static GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
+  var _pageOptions = [HomePage(globalKey), ShoppingCartPage(globalKey)];
 
   _readingCart() async {
     final cartBloc = CartBloc();
@@ -26,36 +27,40 @@ class _AppState extends State<App> {
     List<ProductItem> products =
         list.map((e) => ProductItem.fromJson(e)).toList();
     cartBloc.readingCartController.add(products);
+    print('App -> _readingCart()');
+  }
+
+  @override
+  void initState() {
+    _readingCart();
   }
 
   @override
   Widget build(BuildContext context) {
-    _readingCart();
     return MaterialApp(
-        title: "MyApp",
-        theme: ThemeData(
-            primarySwatch: Colors.lightBlue,
-            appBarTheme: AppBarTheme(color: Colors.white)),
-        home: Scaffold(
-          body: _pageOptions[_selectedPage],
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedPage,
-            onTap: (int index) {
-              setState(() {
-                print(index);
-                _selectedPage = index;
-              });
-            },
-            items: [
-              // BottomNavigationBarItem(
-              //     icon: Icon(Icons.account_balance_wallet),
-              //     title: Text("Balance")),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.list), title: Text("Выбрать")),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.add_shopping_cart), title: Text("Корзина"))
-            ],
-          ),
-        ));
+      title: "MyApp",
+      theme: ThemeData(
+          primarySwatch: Colors.lightBlue,
+          appBarTheme: AppBarTheme(color: Colors.white)),
+      home: Scaffold(
+        body: _pageOptions[_selectedPage],
+        bottomNavigationBar: BottomNavigationBar(
+          key: globalKey,
+          currentIndex: _selectedPage,
+          onTap: (int index) {
+            setState(() {
+              //print(index);
+              _selectedPage = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.list), title: Text("Выбрать")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.add_shopping_cart), title: Text("Корзина"))
+          ],
+        ),
+      ),
+    );
   }
 }

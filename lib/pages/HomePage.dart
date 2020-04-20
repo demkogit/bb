@@ -71,22 +71,27 @@ import 'CategoryListPage.dart';
 // }
 
 class HomePage extends StatefulWidget {
+  final GlobalKey _globalKey;
+  HomePage(this._globalKey);
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(_globalKey);
 }
 
 class _HomePageState extends State<HomePage> {
   Device device = new Device();
   List<Category> categoryList = new List();
+  final GlobalKey _globalKey;
 
   Widget page = Scaffold(
     body: Center(
-        child: SpinKitFadingCircle(
-      color: Colors.blue,
-      size: 50.0,
-    )),
+      child: SpinKitFadingCircle(
+        color: Colors.blue,
+        size: 50.0,
+      ),
+    ),
   );
 
+  _HomePageState(this._globalKey);
   @override
   void initState() {
     super.initState();
@@ -95,42 +100,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadData() async {
-    Api.getCatalogGroupList(1).then((value) {
-      //print(value);
-      var jsonVal = json.decode(value);
-      //print(jsonVal['result']);
-      if (jsonVal['error']) {
-      } else {
-        List<Category> temp = new List();
-        for (var item in jsonVal['result']) {
-          temp.add(Category(item['name'], item['id'], item['idParent']));
-        }
-        for (var item in temp) {
-          if (item.idParent != -1) {
-            temp.firstWhere((e) => e.id == item.idParent).addChild(item);
+    Api.getCatalogGroupList(1).then(
+      (value) {
+        //print(value);
+        var jsonVal = json.decode(value);
+        //print(jsonVal['result']);
+        if (jsonVal['error']) {
+        } else {
+          List<Category> temp = new List();
+          for (var item in jsonVal['result']) {
+            temp.add(Category(item['name'], item['id'], item['idParent']));
           }
-        }
+          for (var item in temp) {
+            if (item.idParent != -1) {
+              temp.firstWhere((e) => e.id == item.idParent).addChild(item);
+            }
+          }
 
-        setState(() {
-          categoryList = temp.where((e) => !e.noChildren).toList();
-          List<ListTile> myWidgets = categoryList.map((item) {
-            return new ListTile(
-                trailing: Icon(Icons.keyboard_arrow_right),
-                title: new Text(item.name),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoryListPage(item),
-                    ),
+          setState(
+            () {
+              categoryList = temp.where((e) => !e.noChildren).toList();
+              List<ListTile> myWidgets = categoryList.map(
+                (item) {
+                  return new ListTile(
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                    title: new Text(item.name),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryListPage(item),
+                        ),
+                      );
+                    },
                   );
-                });
-          }).toList();
+                },
+              ).toList();
 
-          page = new ListView(children: myWidgets);
-        });
-      }
-    });
+              page = new ListView(children: myWidgets);
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -138,9 +150,10 @@ class _HomePageState extends State<HomePage> {
     //UserData userData = UserData();
 
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Выбрать"),
-        ),
-        body: Container(padding: EdgeInsets.all(10.0), child: page));
+      appBar: new AppBar(
+        title: new Text("Выбрать"),
+      ),
+      body: Container(padding: EdgeInsets.all(10.0), child: page),
+    );
   }
 }
