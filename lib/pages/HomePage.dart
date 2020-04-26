@@ -71,16 +71,18 @@ import 'CategoryListPage.dart';
 // }
 
 class HomePage extends StatefulWidget {
-  final GlobalKey _globalKey;
-  HomePage(this._globalKey);
+  final ValueChanged<Category> onPush;
+  HomePage({this.onPush});
+
   @override
-  _HomePageState createState() => _HomePageState(_globalKey);
+  _HomePageState createState() => _HomePageState(onPush);
 }
 
 class _HomePageState extends State<HomePage> {
   Device device = new Device();
   List<Category> categoryList = new List();
-  final GlobalKey _globalKey;
+  final ValueChanged<Category> onPush;
+  _HomePageState(this.onPush);
 
   Widget page = Scaffold(
     body: Center(
@@ -91,7 +93,6 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 
-  _HomePageState(this._globalKey);
   @override
   void initState() {
     super.initState();
@@ -102,9 +103,7 @@ class _HomePageState extends State<HomePage> {
   void _loadData() async {
     Api.getCatalogGroupList(1).then(
       (value) {
-        //print(value);
         var jsonVal = json.decode(value);
-        //print(jsonVal['result']);
         if (jsonVal['error']) {
         } else {
           List<Category> temp = new List();
@@ -123,16 +122,17 @@ class _HomePageState extends State<HomePage> {
               List<ListTile> myWidgets = categoryList.map(
                 (item) {
                   return new ListTile(
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                    trailing: Icon(Icons.chevron_right),
                     title: new Text(item.name),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CategoryListPage(item),
-                        ),
-                      );
-                    },
+                    onTap: () => onPush(item),
+                    // onTap: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => CategoryListPage(item),
+                    //     ),
+                    //   );
+                    // },
                   );
                 },
               ).toList();
@@ -147,8 +147,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //UserData userData = UserData();
-
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Выбрать"),

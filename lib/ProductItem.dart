@@ -39,6 +39,7 @@ class ProductItem {
   int get count => _count;
   int get id => _id;
 
+void set count(int count) => _count = count;
   void increaseCount() => _count++;
   void decreaseCount() => _count > 0 ? _count-- : null;
 }

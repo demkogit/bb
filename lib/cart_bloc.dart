@@ -72,7 +72,9 @@ class CartBloc {
   void _actionHandle(ActionType type) {
     switch (type) {
       case ActionType.clear:
-        _cart.productList.clear();
+      _cart.clearProductList();
+        //_cart.productList.clear();
+        //print('In cart: ${_cart.productList.length}');
         _itemCountSubject.add(_cart.itemCount);
         _productsSubject.add(_cart.productList);
         break;

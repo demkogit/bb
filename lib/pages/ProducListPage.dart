@@ -105,12 +105,12 @@ import '../category.dart';
 // }
 
 class ProductListPage extends StatefulWidget {
-  Category _currentCategory;
-
-  ProductListPage(this._currentCategory);
+  final Category currentCategory;
+  final ValueChanged<ProductItem> onPush;
+  ProductListPage({this.currentCategory,this.onPush});
   @override
   _ProductListPageState createState() =>
-      _ProductListPageState(_currentCategory);
+      _ProductListPageState(currentCategory);
 }
 
 class _ProductListPageState extends State<ProductListPage> {

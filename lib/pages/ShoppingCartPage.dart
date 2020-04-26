@@ -15,8 +15,11 @@ import '../PostBody.dart';
 import '../ProductItem.dart';
 
 class ShoppingCartPage extends StatelessWidget {
-  final GlobalKey _globalKey;
-  ShoppingCartPage(this._globalKey);
+  final GlobalKey navigatorKey;
+  // ShoppingCartPage(this._globalKey);
+  final ValueChanged<ProductItem> onPush;
+  final ValueChanged<int> selectTab;
+  ShoppingCartPage({this.onPush, this.navigatorKey, this.selectTab});
   @override
   Widget build(BuildContext context) {
     final cartBloc = CartBloc();
@@ -71,17 +74,19 @@ class ShoppingCartPage extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Заказ отправлен!'),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                              final BottomNavigationBar navigationBar =
-                                  _globalKey.currentWidget;
-                              navigationBar.onTap(0);
+                             
+                              //print("ya tut");
+                              // final BottomNavigationBar navigationBar =
+                              //     navigatorKey.currentWidget;
+                              // navigationBar.onTap(0);
+                              // var bar = navigatorKey.currentWidget;
+                              // print(bar);
+                              // bar.
                               cartBloc.delete.add(ActionType.clear);
+                              
                               _savingCart();
+                              selectTab(-1);
+                              //Navigator.of(context).pop();
                             }
                           }),
                           child: Icon(

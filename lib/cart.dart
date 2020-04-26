@@ -34,7 +34,8 @@ class Cart {
 
   int get itemCount => _products.length;
 
-  void _loadDataFromStorage(){
-
+  void clearProductList(){
+    productList.forEach((e) => e.count = 0);
+    productList.clear();
   }
 }
