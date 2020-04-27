@@ -28,7 +28,7 @@ class Api {
       request.headers.set('Token', token);
 
       HttpClientResponse response = await request.close();
-      print("started");
+
       return await response.transform(utf8.decoder).join();
     } catch (e) {
       return "{\"error\":true, \"errorDescription\":\"Ошибка интернет соединения\"}";
@@ -47,7 +47,7 @@ class Api {
       request.headers.set('Token', '3ac61eab-d819-4d4f-b024-6584187d8437');
 
       HttpClientResponse response = await request.close();
-      print("started");
+
       return await response.transform(utf8.decoder).join();
     } catch (e) {
       return "{\"error\":true, \"errorDescription\":\"Ошибка интернет соединения\"}";
@@ -66,7 +66,7 @@ class Api {
       request.headers.set('Token', token);
 
       HttpClientResponse response = await request.close();
-      print("started");
+
       return await response.transform(utf8.decoder).join();
     } catch (e) {
       return "{\"error\":true, \"errorDescription\":\"Ошибка интернет соединения\"}";
@@ -84,7 +84,7 @@ class Api {
       request.headers.set('Content-type', contentType);
       request.headers.set('Token', token);
 
-      print(body.toJson());
+  
       request.write(body.toJson());
       HttpClientResponse response = await request.close();
 
