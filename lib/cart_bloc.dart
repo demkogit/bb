@@ -17,6 +17,8 @@ class CartBloc {
     _deletionController.stream.listen(_deletionHandle);
     _actionController.stream.listen(_actionHandle);
     _readingCartController.stream.listen(_readingCart);
+
+    _changeCountController.stream.listen(_changeCountHandler);
     //_productController.stream.listen(_productHandle);
   }
 
@@ -38,6 +40,9 @@ class CartBloc {
 
   final _actionController = StreamController<ActionType>();
   Sink<ActionType> get delete => _actionController.sink;
+
+  final _changeCountController = StreamController<ProductItem>();
+  Sink<ProductItem> get changeCount => _changeCountController.sink;
 
   // final _productController = StreamController<ProductItem>();
   // Sink<ProductItem> get product => _productController.sink;
@@ -72,7 +77,7 @@ class CartBloc {
   void _actionHandle(ActionType type) {
     switch (type) {
       case ActionType.clear:
-      _cart.clearProductList();
+        _cart.clearProductList();
         //_cart.productList.clear();
         //print('In cart: ${_cart.productList.length}');
         _itemCountSubject.add(_cart.itemCount);
@@ -80,5 +85,11 @@ class CartBloc {
         break;
       default:
     }
+  }
+
+  void _changeCountHandler(ProductItem product) {
+    _cart.changeCount(product);
+    _itemCountSubject.add(_cart.itemCount);
+    _productsSubject.add(_cart.productList);
   }
 }

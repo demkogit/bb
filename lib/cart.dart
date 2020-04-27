@@ -14,8 +14,25 @@ class Cart {
       _products.add(product);
     else
       product = _products.singleWhere((element) => element.id == product.id);
+
     product.increaseCount();
+
     print(product.name + " : " + product.count.toString());
+  }
+
+  void changeCount(ProductItem product) {
+    print('${product.count}');
+    if (product.count != 0 &&
+        !_products.any((element) => element.id == product.id))
+      _products.add(product);
+    else {
+      var tempProduct =
+          _products.singleWhere((element) => element.id == product.id);
+      if (product.count == 0)
+        _products.remove(tempProduct);
+      else
+        tempProduct.count = product.count;
+    }
   }
 
   void remove(ProductItem product) {
@@ -34,7 +51,7 @@ class Cart {
 
   int get itemCount => _products.length;
 
-  void clearProductList(){
+  void clearProductList() {
     productList.forEach((e) => e.count = 0);
     productList.clear();
   }

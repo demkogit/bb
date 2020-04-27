@@ -16,6 +16,7 @@ class ProductCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //final ProductCounter pc = Provider.of<ProductCounter>(context);
     final cartBloc = CartBloc();
+    var controller = TextEditingController();
 
     return Card(
       child: Padding(
@@ -81,7 +82,7 @@ class ProductCardWidget extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                      flex: 3,
+                      flex: 1,
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Marquee(
@@ -90,7 +91,7 @@ class ProductCardWidget extends StatelessWidget {
                           scrollAxis: Axis.horizontal,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           blankSpace: 20.0,
-                          velocity: 50.0,
+                          velocity: 40.0,
                           pauseAfterRound: Duration(seconds: 2),
                           startPadding: 10.0,
                           accelerationDuration: Duration(seconds: 1),
@@ -106,6 +107,29 @@ class ProductCardWidget extends StatelessWidget {
                         child: Text('${_product.price}р/1${_product.unit}'),
                       ),
                     ),
+                    // Expanded(
+                    //   flex: 1,
+                    //   child: Row(
+                    //     children: <Widget>[
+                    //       Expanded(
+                    //         flex: 2,
+                    //         child: Text(
+                    //           'Количество:',
+                    //           style: TextStyle(fontWeight: FontWeight.bold),
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: TextField(
+                    //           controller: controller,
+                    //           decoration: InputDecoration(
+                    //             border: InputBorder.none,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Expanded(
                       flex: 1,
                       child: StreamBuilder<List<ProductItem>>(
@@ -123,9 +147,48 @@ class ProductCardWidget extends StatelessWidget {
                                   .count;
                             }
                           }
-                          return Text(
-                            'Количество: ' + '$count',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          controller.text = '$count';
+                          return Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  'Количество:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  controller: controller,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  onChanged: (text) async {
+                                    if (text.length > 3) {
+                                      //controller.clear();
+                                      controller.text = text.substring(0, 3);
+                                      controller.selection =
+                                          TextSelection.collapsed(
+                                              offset: controller.text.length);
+                                    }
+                                    //text = text.substring(0, 2);
+                                  },
+                                  onEditingComplete: () {
+                                    if (controller.text.isEmpty) {
+                                      controller.text = '0';
+                                      _product.count = 0;
+                                    } else
+                                      _product.count =
+                                          int.parse(controller.text);
+                                    print('productcount: ${_product.count}');
+                                    cartBloc.changeCount.add(_product);
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
