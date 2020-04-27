@@ -119,10 +119,12 @@ class _AppState extends State<App> {
     final cartBloc = CartBloc();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('products');
-    List list = json.decode(jsonString);
-    List<ProductItem> products =
-        list.map((e) => ProductItem.fromJson(e)).toList();
-    cartBloc.readingCartController.add(products);
-    print('App -> _readingCart()');
+    if (jsonString != null) {
+      List list = json.decode(jsonString);
+      List<ProductItem> products =
+          list.map((e) => ProductItem.fromJson(e)).toList();
+      cartBloc.readingCartController.add(products);
+      print('App -> _readingCart()');
+    }
   }
 }

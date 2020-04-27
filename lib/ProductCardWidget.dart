@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,147 +19,237 @@ class ProductCardWidget extends StatelessWidget {
     //final ProductCounter pc = Provider.of<ProductCounter>(context);
     final cartBloc = CartBloc();
 
+    // return Card(
+    //   child: Padding(
+    //     padding: EdgeInsets.all(10.0),
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.start,
+    //       crossAxisAlignment: CrossAxisAlignment.center,
+    //       children: <Widget>[
+    //         Stack(
+    //           children: <Widget>[
+    //             Column(
+    //               children: <Widget>[
+    //                 Container(
+    //                   width: 100,
+    //                   height: 100,
+    //                   child: CachedNetworkImage(
+    //                     fit: BoxFit.contain,
+    //                     imageUrl: _product.imageURL,
+    //                     placeholder: (context, url) =>
+    //                         const CircularProgressIndicator(),
+    //                     errorWidget: (context, url, error) =>
+    //                         const Icon(Icons.error),
+    //                   ),
+    //                 ),
+
+    //                 // CachedNetworkImage(
+    //                 //   fit: BoxFit.fill,
+    //                 //   imageUrl: _product.imageURL,
+    //                 //   placeholder: (context, url) => CircleAvatar(
+    //                 //     backgroundColor: Colors.grey[300],
+    //                 //     radius: 50,
+    //                 //   ),
+    //                 //   imageBuilder: (context, image) => CircleAvatar(
+    //                 //     backgroundImage: image,
+    //                 //     radius: 50,
+    //                 //   ),
+    //                 // ),
+    //                 Container(height: 10.0)
+    //               ],
+    //             ),
+    //             Column(
+    //               children: <Widget>[
+    //                 //first element in column is the transparent offset
+    //                 Container(
+    //                   height: 60.0,
+    //                 ),
+    //                 Row(
+    //                   mainAxisAlignment: MainAxisAlignment.start,
+    //                   crossAxisAlignment: CrossAxisAlignment.center,
+    //                   children: <Widget>[
+    //                     Expanded(
+    //                       child: RaisedButton(
+    //                         elevation: 5,
+    //                         splashColor: Colors.green,
+    //                         color: Colors.white,
+    //                         shape: CircleBorder(),
+    //                         child: Icon(Icons.add),
+    //                         onPressed: () {
+    //                           cartBloc.addtition.add(_product);
+    //                           _savingCart();
+    //                         },
+    //                       ),
+    //                     ),
+    //                     Expanded(
+    //                       child: RaisedButton(
+    //                         elevation: 5,
+    //                         splashColor: Colors.green,
+    //                         color: Colors.white,
+    //                         shape: CircleBorder(),
+    //                         child: Icon(Icons.remove),
+    //                         onPressed: () {
+    //                           cartBloc.deletion.add(_product);
+    //                           _savingCart();
+    //                         },
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 )
+    //               ],
+    //             ),
+    //           ],
+    //         ),
+    //         Expanded(child: Text(_product.name)),
+    //         Text('${_product.price} руб./1 ${_product.unit}'),
+    //         StreamBuilder<List<ProductItem>>(
+    //           stream: cartBloc.productList,
+    //           initialData: new List<ProductItem>(),
+    //           builder: (context, snapshot) {
+    //             int count = 0;
+    //             if (snapshot.data.length > 0) {
+    //               if (snapshot.data.singleWhere((e) => e.id == _product.id,
+    //                       orElse: () => null) !=
+    //                   null) {
+    //                 count = snapshot.data
+    //                     .singleWhere((e) => e.id == _product.id)
+    //                     .count;
+    //               }
+    //             }
+    //             return Text(
+    //               'Количество: ' + '$count',
+    //               style: TextStyle(fontWeight: FontWeight.bold),
+    //             );
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
     return Card(
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      //first element in the column is the white background (the Image.asset in your case)
-                      // DecoratedBox(
-                      //     decoration: BoxDecoration(
-                      //       image: new DecorationImage(
-                      //         image: new AssetImage('images/cat.jpg'),
-                      //         fit: BoxFit.cover,
-                      //       ),
-                      //     ),
-                      //     child: Container(
-                      //       width: 140.0,
-                      //       height: 90.0,
-                      //     )),
-                      //second item in the column is a transparent space of 20
-                      CachedNetworkImage(
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                children: [
+                  Container(
+                    child: Center(
+                      child: CachedNetworkImage(
+                        //fit: BoxFit.fill,
+                        placeholder: (context, url) => Center(
+                          child: const CircularProgressIndicator(),
+                        ),
                         imageUrl: _product.imageURL,
-                        placeholder: (context, url) => CircleAvatar(
-                          backgroundColor: Colors.grey[300],
-                          radius: 50,
-                        ),
-                        imageBuilder: (context, image) => CircleAvatar(
-                          backgroundImage: image,
-                          radius: 50,
-                        ),
                       ),
-                      Container(height: 10.0)
-                    ],
-                  ),
-                  Column(children: <Widget>[
-                    //first element in column is the transparent offset
-                    Container(
-                      height: 60.0,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
-                            child: RaisedButton(
-                          elevation: 5,
-                          splashColor: Colors.green,
-                          color: Colors.white,
-                          shape: CircleBorder(),
-                          child: Icon(Icons.add),
-                          onPressed: () {
-                            cartBloc.addtition.add(_product);
-                            _savingCart();
-                            //pc.increase(_product);
-                          },
-                        )),
+                          child: RaisedButton(
+                            elevation: 5,
+                            splashColor: Colors.green,
+                            color: Colors.white,
+                            shape: CircleBorder(),
+                            child: Icon(Icons.add),
+                            onPressed: () {
+                              cartBloc.addtition.add(_product);
+                              _savingCart();
+                            },
+                          ),
+                        ),
                         Expanded(
-                            child: RaisedButton(
-                          elevation: 5,
-                          splashColor: Colors.green,
-                          color: Colors.white,
-                          shape: CircleBorder(),
-                          child: Icon(Icons.remove),
-                          onPressed: () {
-                            cartBloc.deletion.add(_product);
-                            _savingCart();
-                            //pc.decrease(_product);
-                          },
-                        )),
+                          child: RaisedButton(
+                            elevation: 5,
+                            splashColor: Colors.red,
+                            color: Colors.white,
+                            shape: CircleBorder(),
+                            child: Icon(Icons.remove),
+                            onPressed: () {
+                              cartBloc.deletion.add(_product);
+                              _savingCart();
+                            },
+                          ),
+                        ),
                       ],
-                    )
-                  ]),
+                    ),
+                  ),
                 ],
               ),
-              Expanded(child: Text(_product.name)),
-              // Text(
-              //   _product.price.toString() + " ₽ / 1 " + _product.unit.toString(),
-              //   style: TextStyle(fontWeight: FontWeight.bold),
-              // ),
-              Text('${_product.price} руб./1 ${_product.unit}'),
-              StreamBuilder<List<ProductItem>>(
-                  stream: cartBloc.productList,
-                  initialData: new List<ProductItem>(),
-                  builder: (context, snapshot) {
-                    int count = 0;
-                    if (snapshot.data.length > 0) {
-                      if (snapshot.data.singleWhere((e) => e.id == _product.id,
-                              orElse: () => null) !=
-                          null) {
-                        count = snapshot.data
-                            .singleWhere((e) => e.id == _product.id)
-                            .count;
-                      }
-                    }
-                    return Text(
-                      'Количество: ' + '$count',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    );
-                  }),
-
-              // Text(
-              //   'Количество: ' + _product.count.toString(),//_product.count.toString(),
-              //   style: TextStyle(fontWeight: FontWeight.bold),
-              // ),
-            ]),
-        // child: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: <Widget>[
-        //     Container(
-        //         constraints: new BoxConstraints.expand(
-        //           height: 100.0,
-        //         ),
-        //         // padding:
-        //         //     new EdgeInsets.only(left: 16.0, bottom: 8.0, right: 16.0),
-        //         decoration: new BoxDecoration(
-        //           image: new DecorationImage(
-        //             image: new AssetImage('images/cat.jpg'),
-        //             fit: BoxFit.cover,
-        //           ),
-        //         ),
-        //         ),
-        //     Text(_product.name),
-        //     Text(
-        //       _product.price.toString() + " ₽ / 1 " + _product.unit.toString(),
-        //       style: TextStyle(fontWeight: FontWeight.bold),
-        //     ),
-        //     Positioned(
-        //       child: FlatButton(
-        //         color: Colors.red,
-        //         child: Text("Press Me"),
-        //         onPressed: () {},
-        //       ),
-        //       right: 0,
-        //       top: 0
-        //     )
-        //   ],
-        // ),
+              flex: 2,
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 3,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        // child: Text(
+                        //   _product.name,
+                        //   overflow: TextOverflow.fade,
+                        //   style: TextStyle(fontWeight: FontWeight.bold,),
+                        // ),
+                        child: Marquee(
+                          text: _product.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          scrollAxis: Axis.horizontal,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          blankSpace: 20.0,
+                          velocity: 100.0,
+                          pauseAfterRound: Duration(seconds: 2),
+                          startPadding: 10.0,
+                          accelerationDuration: Duration(seconds: 1),
+                          accelerationCurve: Curves.linear,
+                          decelerationDuration: Duration(milliseconds: 500),
+                          decelerationCurve: Curves.easeOut,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        child: Text('${_product.price}р/1${_product.unit}'),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: StreamBuilder<List<ProductItem>>(
+                        stream: cartBloc.productList,
+                        initialData: new List<ProductItem>(),
+                        builder: (context, snapshot) {
+                          int count = 0;
+                          if (snapshot.data.length > 0) {
+                            if (snapshot.data.singleWhere(
+                                    (e) => e.id == _product.id,
+                                    orElse: () => null) !=
+                                null) {
+                              count = snapshot.data
+                                  .singleWhere((e) => e.id == _product.id)
+                                  .count;
+                            }
+                          }
+                          return Text(
+                            'Количество: ' + '$count',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
