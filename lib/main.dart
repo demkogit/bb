@@ -34,8 +34,6 @@ _readingCart() async {
   cart.readingCartController.add(products);
 }
 
-
-
 class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,7 @@ class MyAppState extends State<MyApp> {
           '/Home': (BuildContext context) => App(),
           '/Login': (BuildContext context) => LoginPage(),
           '/Registration': (BuildContext context) => RegistrationPage(),
-        }, home: LoginPage()) //App(),
+        }, home: App()) //App(),
         );
   }
 }

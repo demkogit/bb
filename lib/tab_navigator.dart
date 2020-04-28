@@ -1,5 +1,6 @@
 import 'package:bb/pages/CategoryListPage.dart';
 import 'package:bb/pages/HomePage.dart';
+import 'package:bb/pages/MainPage.dart';
 import 'package:bb/pages/ProducListPage.dart';
 import 'package:bb/pages/ProductPage.dart';
 import 'package:bb/pages/ShoppingCartPage.dart';
@@ -42,45 +43,121 @@ class TabNavigator extends StatelessWidget {
       //     ),
       //navigatorKey.currentWidget
       TabNavigatorRoutes.root: (context) {
-        return tabIndex == 0
-            ? HomePage(
-                onPush: (categoryParent) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CategoryListPage(
-                      currentCategory: categoryParent,
-                      onPush: (categoryChild) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductListPage(
-                            currentCategory: categoryChild,
-                            onPush: (selectedProduct) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductPage(
-                                  selectedProduct,
+        switch (tabIndex) {
+          case 0:
+            return HomePage(
+              onPush: (categoryParent) => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CategoryListPage(
+                    currentCategory: categoryParent,
+                    onPush: (categoryChild) {
+                      if (categoryChild.noChildren)
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductListPage(
+                              currentCategory: categoryChild,
+                              onPush: (selectedProduct) => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(
+                                    selectedProduct,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
+                        );
+                      else
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryListPage(
+                              currentCategory: categoryChild,
+                              onPush: (nextCategoryChild) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductListPage(
+                                      currentCategory: nextCategoryChild,
+                                      onPush: (selectedProduct) =>
+                                          Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductPage(
+                                            selectedProduct,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                    },
                   ),
                 ),
-              )
-            : ShoppingCartPage(
-                onPush: (selectedProduct) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductPage(
-                      selectedProduct,
-                    ),
+              ),
+            );
+          case 1:
+            return ShoppingCartPage(
+              onPush: (selectedProduct) => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductPage(
+                    selectedProduct,
                   ),
                 ),
-                navigatorKey: navigatorKey,
-                selectTab: selectTab,
-              );
+              ),
+              navigatorKey: navigatorKey,
+              selectTab: selectTab,
+            );
+          case 2:
+            return MainPage();
+          default:
+        }
+        // return tabIndex == 0
+        //     ? HomePage(
+        //         onPush: (categoryParent) => Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) => CategoryListPage(
+        //               currentCategory: categoryParent,
+        //               onPush: (categoryChild) => Navigator.push(
+        //                 context,
+        //                 MaterialPageRoute(
+        //                   builder: (context) => ProductListPage(
+        //                     currentCategory: categoryChild,
+        //                     onPush: (selectedProduct) => Navigator.push(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                         builder: (context) => ProductPage(
+        //                           selectedProduct,
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       )
+        //     : ShoppingCartPage(
+        //         onPush: (selectedProduct) => Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) => ProductPage(
+        //               selectedProduct,
+        //             ),
+        //           ),
+        //         ),
+        //         navigatorKey: navigatorKey,
+        //         selectTab: selectTab,
+        //       );
       },
     };
   }

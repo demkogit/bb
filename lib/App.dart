@@ -20,10 +20,11 @@ class _AppState extends State<App> {
   //int _selectedPage = 0;
   //static GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
   //var _pageOptions = [HomePage(globalKey), ShoppingCartPage(globalKey)];
-  int _currentTab = 0;
+  int _currentTab = 2;
   Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
     0: GlobalKey<NavigatorState>(), // HomePage()
     1: GlobalKey<NavigatorState>(), // CartPage()
+    2: GlobalKey<NavigatorState>(), // MainPage()
   };
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
@@ -33,31 +34,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   title: "MyApp",
-    //   theme: ThemeData(
-    //       primarySwatch: Colors.lightBlue,
-    //       appBarTheme: AppBarTheme(color: Colors.white)),
-    //   home: Scaffold(
-    //     body: _pageOptions[_selectedPage],
-    //     bottomNavigationBar: BottomNavigationBar(
-    //       key: globalKey,
-    //       currentIndex: _selectedPage,
-    //       onTap: (int index) {
-    //         setState(() {
-    //           //print(index);
-    //           _selectedPage = index;
-    //         });
-    //       },
-    //       items: [
-    //         BottomNavigationBarItem(
-    //             icon: Icon(Icons.list), title: Text("Выбрать")),
-    //         BottomNavigationBarItem(
-    //             icon: Icon(Icons.add_shopping_cart), title: Text("Корзина"))
-    //       ],
-    //     ),
-    //   ),
-    // );
     return WillPopScope(
       onWillPop: () async {
         final isFirstRouteInCurrentTab =
@@ -75,6 +51,7 @@ class _AppState extends State<App> {
         body: Stack(children: <Widget>[
           _buildOffstageNavigator(0),
           _buildOffstageNavigator(1),
+          _buildOffstageNavigator(2),
           // _buildOffstageNavigator(TabItem.blue),
         ]),
         bottomNavigationBar: BottomNavigation(

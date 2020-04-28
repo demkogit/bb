@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
 Map<int, String> tabName = {
-  0: 'HomePage',
-  1: 'CartPage',
-};
-
-Map<int, MaterialColor> activeTabColor = {
-  0: Colors.red,
-  1: Colors.red,
+  0: 'Категории',
+  1: 'Корзина',
+  2: 'Дом',
 };
 
 class BottomNavigation extends StatelessWidget {
@@ -21,8 +17,9 @@ class BottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       items: [
-        _buildItem(tabItem: 0, tabIcon: Icons.home),
+        _buildItem(tabItem: 0, tabIcon: Icons.list),
         _buildItem(tabItem: 1, tabIcon: Icons.shopping_basket),
+        _buildItem(tabItem: 2, tabIcon: Icons.home),
         // _buildItem(tabItem: TabItem.blue),
       ],
       onTap: (index) => onSelectTab(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_emoji/flutter_emoji.dart';
 
 import '../category.dart';
 import 'ProducListPage.dart';
@@ -36,10 +37,12 @@ class CategoryListPage extends StatelessWidget {
     }).toList();
 
     ListView myList = new ListView(children: myWidgets);
-
+    var parser = EmojiParser();
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(currentCategory.name),
+        title: new Text(
+          parser.emojify(currentCategory.name),
+        ),
       ),
       body: myList,
     );

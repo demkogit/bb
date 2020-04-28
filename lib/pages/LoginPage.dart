@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     TextFormField(
-                      decoration: InputDecoration(labelText: 'Логин'),
+                      decoration: InputDecoration(labelText: 'Номер телефона'),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
