@@ -6,6 +6,7 @@ import 'package:bb/ProductCounter.dart';
 import 'package:bb/UserData.dart';
 import 'package:bb/cart.dart';
 import 'package:bb/cart_bloc.dart';
+import 'package:bb/send_order_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../PostBody.dart';
 import '../ProductItem.dart';
+import 'RegistrationPage.dart';
 
 class ShoppingCartPage extends StatelessWidget {
   final GlobalKey navigatorKey;
@@ -20,164 +22,86 @@ class ShoppingCartPage extends StatelessWidget {
   final ValueChanged<ProductItem> onPush;
   final ValueChanged<int> selectTab;
   ShoppingCartPage({this.onPush, this.navigatorKey, this.selectTab});
+
+  final cartBloc = CartBloc();
   @override
   Widget build(BuildContext context) {
-    final cartBloc = CartBloc();
-    // final ProductCounter pc = Provider.of<ProductCounter>(context);
-    //List<ProductCardWidget> myWidgets = new List<ProductCardWidget>();
-    //.productList.map((item) => ProductCardWidget(item)).toList();
+    List<ProductCardWidget> myWidgets = [];
+    GridView myGrid;
 
-    // GridView myGrid = GridView.count(
-    //     childAspectRatio: 3 / 4, crossAxisCount: 2, children: myWidgets);
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Закажи"),
-          actions: <Widget>[
-            StreamBuilder<List<ProductItem>>(
-              stream: cartBloc.productList,
-              initialData: new List<ProductItem>(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data.length > 0) {
-                    double sum = 0.0;
-                    snapshot.data.forEach(
-                      (e) => {sum += e.price * e.count},
-                    );
-
-                    return Row(
-                      children: <Widget>[
-                        Text(
-                          'Сумма: $sum',
-                          style: TextStyle(
-                              backgroundColor: Colors.lightBlue[300],
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 26.0,
-                        ),
-                        GestureDetector(
-                          onTap: () async => Api.order(
-                            {
-                              'shopId': 1,
-                              'userId': UserData().id,
-                              'productList': (await cartBloc.productList.first)
-                                  .map((e) => e.toPOSTJson())
-                                  .toList(),
-                            },
-                          ).then((e) {
-                            var decoded = json.decode(e);
-                            if (decoded['error']) {
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(decoded['errorDescription']),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            } else {
-                             
-                              //print("ya tut");
-                              // final BottomNavigationBar navigationBar =
-                              //     navigatorKey.currentWidget;
-                              // navigationBar.onTap(0);
-                              // var bar = navigatorKey.currentWidget;
-                              // print(bar);
-                              // bar.
-                              cartBloc.delete.add(ActionType.clear);
-                              
-                              _savingCart();
-                              selectTab(-1);
-                              //Navigator.of(context).pop();
-                            }
-                          }),
-                          child: Icon(
-                            Icons.assignment_turned_in,
-                            size: 26.0,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 26.0,
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Text('');
-                  }
-                } else {
-                  return Text('');
-                }
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  print('tap');
-                  cartBloc.delete.add(ActionType.clear);
-                  _savingCart();
-                },
-                child: Icon(
-                  Icons.delete,
-                  size: 26.0,
+      appBar: AppBar(
+        title: Text("Закажи"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Tap'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => RegistrationPage(),
                 ),
+              );
+            },
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                print('tap');
+                cartBloc.delete.add(ActionType.clear);
+                _savingCart();
+              },
+              child: Icon(
+                Icons.delete,
+                size: 26.0,
               ),
             ),
-            // Padding(
-            //     padding: EdgeInsets.only(right: 20.0),
-            //     child: GestureDetector(
-            //       onTap: () {
-            //         _savingCart();
-            //       },
-            //       child: Icon(
-            //         Icons.save,
-            //         size: 26.0,
-            //       ),
-            //     )),
-            // Padding(
-            //     padding: EdgeInsets.only(right: 20.0),
-            //     child: GestureDetector(
-            //       onTap: () {
-            //         _readingCart();
-            //       },
-            //       child: Icon(
-            //         Icons.chrome_reader_mode,
-            //         size: 26.0,
-            //       ),
-            //     )),
-          ],
-        ),
-        body: Stack(children: <Widget>[
+          ),
+        ],
+      ),
+      body: Stack(
+        children: <Widget>[
           StreamBuilder<List<ProductItem>>(
-              stream: cartBloc.productList,
-              initialData: new List<ProductItem>(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data.length > 0) {
-                    List<ProductCardWidget> myWidgets =
-                        snapshot.data.map((e) => ProductCardWidget(e)).toList();
-                    double sum = 0.0;
-                    snapshot.data.forEach((e) => {sum += e.price * e.count});
+            stream: cartBloc.productList,
+            initialData: new List<ProductItem>(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.length > 0) {
+                  myWidgets =
+                      snapshot.data.map((e) => ProductCardWidget(e)).toList();
 
-                    GridView myGrid = GridView.count(
-                        childAspectRatio: 3 / 4,
-                        crossAxisCount: 2,
-                        children: myWidgets);
-                    return myGrid;
-                  } else {
-                    return Center(
-                        child: Text(
-                      "В корзине пусто",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ));
-                  }
+                  myGrid = GridView.count(
+                      padding: EdgeInsets.only(bottom: 60.0),
+                      childAspectRatio: 3 / 4,
+                      crossAxisCount: 2,
+                      children: myWidgets);
+                  return myGrid;
                 } else {
                   return Center(
-                      child: SpinKitFadingCircle(
-                    color: Colors.blue,
-                    size: 50.0,
+                      child: Text(
+                    "В корзине пусто",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ));
                 }
-              }),
-        ]));
+              } else {
+                return Center(
+                  child: SpinKitFadingCircle(
+                    color: Colors.blue,
+                    size: 50.0,
+                  ),
+                );
+              }
+            },
+          ),
+          SendOrderWidget(
+            //pushRegistration: (name) => Navigator.pushNamed(context, name),
+            stream: cartBloc.total,
+            selectTab: selectTab,
+          ),
+        ],
+      ),
+    );
   }
 
   _savingCart() async {
@@ -190,100 +114,3 @@ class ShoppingCartPage extends StatelessWidget {
     //}
   }
 }
-
-// class ShoppingCartPage extends StatefulWidget {
-//   @override
-//   State<StatefulWidget> createState() {
-//     // TODO: implement createState
-//     return ShoppingCartPageState();
-//   }
-// }
-
-// class ShoppingCartPageState extends State<ShoppingCartPage> {
-//   Widget content;
-//   GridView myGrid;
-//   @override
-//   Widget build(BuildContext context) {
-//     final cartBloc = CartBloc();
-//     // final ProductCounter pc = Provider.of<ProductCounter>(context);
-//     // List<ProductCardWidget> myWidgets = new List<ProductCardWidget>();
-//     //.productList.map((item) => ProductCardWidget(item)).toList();
-//     content = Center(
-//         child: SpinKitFadingCircle(
-//       color: Colors.blue,
-//       size: 50.0,
-//     ));
-//     // GridView myGrid = GridView.count(
-//     //     childAspectRatio: 3 / 4, crossAxisCount: 2, children: myWidgets);
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Закажи"),
-//         actions: <Widget>[
-//           Padding(
-//               padding: EdgeInsets.only(right: 20.0),
-//               child: GestureDetector(
-//                 onTap: () {
-//                   print('tap');
-//                   cartBloc.delete.add(ActionType.clear);
-//                 },
-//                 child: Icon(
-//                   Icons.delete,
-//                   size: 26.0,
-//                 ),
-//               )),
-//           Padding(
-//               padding: EdgeInsets.only(right: 20.0),
-//               child: GestureDetector(
-//                 onTap: () {
-//                   _savingCart();
-//                 },
-//                 child: Icon(
-//                   Icons.save,
-//                   size: 26.0,
-//                 ),
-//               )),
-//           Padding(
-//               padding: EdgeInsets.only(right: 20.0),
-//               child: GestureDetector(
-//                 onTap: () {
-//                   _readingCart();
-//                 },
-//                 child: Icon(
-//                   Icons.chrome_reader_mode,
-//                   size: 26.0,
-//                 ),
-//               )),
-//         ],
-//       ),
-//       body: StreamBuilder<List<ProductItem>>(
-//           stream: cartBloc.productList,
-//           initialData: new List<ProductItem>(),
-//           builder: (context, snapshot) {
-//             if (snapshot.hasData) {
-//               if (snapshot.data.length > 0) {
-//                 List<ProductCardWidget> myWidgets =
-//                     snapshot.data.map((e) => ProductCardWidget(e)).toList();
-//                 myGrid = GridView.count(
-//                     childAspectRatio: 3 / 4,
-//                     crossAxisCount: 2,
-//                     children: myWidgets);
-//                 return myGrid;
-//               } else {
-//                 return Center(
-//                     child: Text(
-//                   "В корзине пусто",
-//                   style: TextStyle(fontWeight: FontWeight.bold),
-//                 ));
-//               }
-//             } else {
-//               return Center(
-//                   child: SpinKitFadingCircle(
-//                 color: Colors.blue,
-//                 size: 50.0,
-//               ));
-//             }
-//           }),
-//     );
-//   }
-
-// }
