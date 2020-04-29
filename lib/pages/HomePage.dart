@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'dart:convert' show utf8;
+
 import 'package:bb/LocalDataBase/DBManager.dart';
 import 'package:bb/UserData.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    device.initPlatformState();
-    _loadData();
+    // device.initPlatformState();
+    // _loadData();
   }
 
   List<Category> toRemove = [];
@@ -47,17 +49,16 @@ class _HomePageState extends State<HomePage> {
     Api.getCatalogGroupList(1).then(
       (value) {
         var jsonVal = json.decode(value);
-
+        var parser = EmojiParser();
         if (jsonVal['error']) {
         } else {
           List<Category> temp = new List();
           for (var item in jsonVal['result']) {
-            temp.add(Category(item['name'], item['id'], item['idParent']));
+            temp.add(Category(
+                parser.emojify(item['name']), item['id'], item['idParent']));
           }
           for (var item in temp.reversed) {
             if (item.idParent != -1 && item.idParent != null) {
-              print(item.name);
-              //temp.firstWhere((e) => e.id == item.idParent).addChild(item);
               temp
                   .where((e) => e.id == item.idParent)
                   .forEach((e) => e.addChild(item));
@@ -69,7 +70,6 @@ class _HomePageState extends State<HomePage> {
 
           setState(
             () {
-              var parser = EmojiParser();
               categoryList = temp.where((e) => !e.noChildren).toList();
               List<ListTile> myWidgets = categoryList.map(
                 (item) {
@@ -77,17 +77,9 @@ class _HomePageState extends State<HomePage> {
                   return new ListTile(
                     trailing: Icon(Icons.chevron_right),
                     title: new Text(
-                      parser.emojify(item.name),
+                      item.name,
                     ),
                     onTap: () => onPush(item),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => CategoryListPage(item),
-                    //     ),
-                    //   );
-                    // },
                   );
                 },
               ).toList();
@@ -102,9 +94,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    device.initPlatformState();
+    _loadData();
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Выбрать"),
+        title: new Text('Выбрать'),
       ),
       body: Container(padding: EdgeInsets.all(10.0), child: page),
     );

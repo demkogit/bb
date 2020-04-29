@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Map<int, String> tabName = {
-  0: 'Категории',
+  0: 'Выбрать',
   1: 'Корзина',
   2: 'Дом',
 };
@@ -17,7 +17,7 @@ class BottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       items: [
-        _buildItem(tabItem: 0, tabIcon: Icons.list),
+        _buildItem(tabItem: 0, tabIcon: Icons.view_list),
         _buildItem(tabItem: 1, tabIcon: Icons.shopping_basket),
         _buildItem(tabItem: 2, tabIcon: Icons.home),
         // _buildItem(tabItem: TabItem.blue),

@@ -151,7 +151,7 @@ class ProductCardWidget extends StatelessWidget {
                           return Row(
                             children: <Widget>[
                               Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                   'Количество:',
                                   style: TextStyle(fontWeight: FontWeight.bold),

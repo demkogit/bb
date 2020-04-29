@@ -25,28 +25,22 @@ class MyApp extends StatefulWidget {
   }
 }
 
-_readingCart() async {
-  final cart = CartBloc();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String jsonString = prefs.getString('products');
-  List<Map> list = json.decode(jsonString);
-  List<ProductItem> products = list.map((e) => ProductItem.fromJson(e));
-  cart.readingCartController.add(products);
-}
-
 class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ProductCounter>.value(value: ProductCounter())
-        ],
-        child: MaterialApp(routes: <String, WidgetBuilder>{
+      providers: [
+        ChangeNotifierProvider<ProductCounter>.value(value: ProductCounter())
+      ],
+      child: MaterialApp(
+        routes: <String, WidgetBuilder>{
           '/Home': (BuildContext context) => App(),
           '/Login': (BuildContext context) => LoginPage(),
           '/Registration': (BuildContext context) => RegistrationPage(),
-        }, home: App()) //App(),
-        );
+        },
+        home: App(),
+      ), //App(),
+    );
   }
 }

@@ -6,6 +6,16 @@ class UserData {
   factory UserData() => _singleton;
   UserData._internal();
 
+  UserData.fromJson(Map<String, dynamic> json) {
+    _name = json['_name'];
+    _id = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        '_name': _name,
+        '_id': _id,
+      };
+
   String get name => _name;
   int get id => _id;
 

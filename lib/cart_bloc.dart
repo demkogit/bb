@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'ProductItem.dart';
 import 'cart.dart';
 
-enum ActionType { clear }
+enum ActionType { clear, getTotal }
 
 class CartBloc {
   final _cart = new Cart();
@@ -44,52 +44,47 @@ class CartBloc {
   final _changeCountController = StreamController<ProductItem>();
   Sink<ProductItem> get changeCount => _changeCountController.sink;
 
-  // final _productController = StreamController<ProductItem>();
-  // Sink<ProductItem> get product => _productController.sink;
-
-  // final _productSubject = BehaviorSubject<int>();
-  // Stream<int> get productCount => _productSubject.stream;
-
-  // CartBloc() {
-  //   _additionController.stream.listen(_additionHandle);
-  //   _deletionController.stream.listen(_deletionHandle);
-  // }
+  final _totalSubject = BehaviorSubject<double>();
+  Stream<double> get total => _totalSubject.stream;
 
   void _additionHandle(ProductItem product) {
     _cart.add(product);
     _itemCountSubject.add(_cart.itemCount);
     _productsSubject.add(_cart.productList);
+    _totalSubject.add(_cart.total);
   }
 
   void _deletionHandle(ProductItem product) {
     _cart.remove(product);
     _itemCountSubject.add(_cart.itemCount);
     _productsSubject.add(_cart.productList);
+    _totalSubject.add(_cart.total);
   }
 
   void _readingCart(List<ProductItem> products) {
     _cart.productList.clear();
-    _cart.productList.insertAll(0, products);
-    _itemCountSubject.add(_cart.itemCount);
+    _cart.setProductList(products);
     _productsSubject.add(_cart.productList);
-  }
-
-  void _actionHandle(ActionType type) {
-    switch (type) {
-      case ActionType.clear:
-        _cart.clearProductList();
-        //_cart.productList.clear();
-        //print('In cart: ${_cart.productList.length}');
-        _itemCountSubject.add(_cart.itemCount);
-        _productsSubject.add(_cart.productList);
-        break;
-      default:
-    }
+    _itemCountSubject.add(_cart.itemCount);
+    _totalSubject.add(_cart.total);
   }
 
   void _changeCountHandler(ProductItem product) {
     _cart.changeCount(product);
     _itemCountSubject.add(_cart.itemCount);
     _productsSubject.add(_cart.productList);
+    _totalSubject.add(_cart.total);
+  }
+
+  void _actionHandle(ActionType type) {
+    switch (type) {
+      case ActionType.clear:
+        _cart.clearProductList();
+        _itemCountSubject.add(_cart.itemCount);
+        _productsSubject.add(_cart.productList);
+        _totalSubject.add(_cart.total);
+        break;
+      default:
+    }
   }
 }

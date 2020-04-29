@@ -56,9 +56,7 @@ class _ProductListPageState extends State<ProductListPage> {
         }
 
         setState(() {
-          //print(_productList.length);
           if (temp.length > 0) {
-            //myWidgets = temp.map((e) => ProductCardWidget(e)).toList();
             widgets = temp.map((e) {
               return GridTile(
                   child: InkResponse(
@@ -68,7 +66,7 @@ class _ProductListPageState extends State<ProductListPage> {
             }).toList();
 
             var grid =
-                SliverGrid.extent(maxCrossAxisExtent: 200.0, childAspectRatio: 3/4, children: widgets);
+                SliverGrid.extent(maxCrossAxisExtent: 300.0, childAspectRatio: 3/4, children: widgets);
 
             page = CustomScrollView(slivers: [grid]);
           } else {

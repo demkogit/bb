@@ -97,6 +97,7 @@ class _AppState extends State<App> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('products');
     if (jsonString != null) {
+      print(jsonString);
       List list = json.decode(jsonString);
       List<ProductItem> products =
           list.map((e) => ProductItem.fromJson(e)).toList();

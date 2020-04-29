@@ -37,11 +37,11 @@ class CategoryListPage extends StatelessWidget {
     }).toList();
 
     ListView myList = new ListView(children: myWidgets);
-    var parser = EmojiParser();
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
-          parser.emojify(currentCategory.name),
+          currentCategory.name,
         ),
       ),
       body: myList,

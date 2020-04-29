@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:bb/UserData.dart';
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Api.dart';
 import '../PostBody.dart';
@@ -27,6 +29,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var textEditingController = TextEditingController();
+    var maskTextInputFormatter = MaskTextInputFormatter(
+        mask: "(###) ###-##-##", filter: {"#": RegExp(r'[0-9]')});
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Вход'),
@@ -39,83 +45,113 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(25.0),
             child: SingleChildScrollView(
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Номер телефона'),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          _phone = value;
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // TextFormField(
+                  //   decoration: InputDecoration(labelText: 'Номер телефона'),
+                  //   validator: (value) {
+                  //     if (value.isEmpty) {
+                  //       return 'Please enter some text';
+                  //     }
+                  //     return null;
+                  //   },
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _phone = value;
+                  //     });
+                  //   },
+                  // ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter some text';
+                      if (textEditingController.text.length != 10)
+                        return 'Неверный формат номера';
+                      return null;
+                    },
+                    // controller: textEditingController,
+                    inputFormatters: [maskTextInputFormatter],
+                    autocorrect: false,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      prefixText: "+7 ",
+                      prefixStyle: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                      hintText: "(123) 123-45-67",
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Пароль'),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _pass = value;
+                      });
+                    },
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        Api.authorization(PostBody(
+                                data: Api.makeData('8' + _phone, _token, _pass),
+                                name: '',
+                                uid: device.deviceData['uid'],
+                                deviceName: device.deviceData['deviceName'],
+                                system: device.deviceData['system'],
+                                systemVersion:
+                                    device.deviceData['systemVersion']))
+                            .then((value) {
+                          var jsonVal = json.decode(value);
+                          if (jsonVal['error']) {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(jsonVal['errorDescription']),
+                              backgroundColor: Colors.red,
+                            ));
+                          } else {
+                            UserData data = UserData();
+                            data.setId(jsonVal['result']['id']);
+                            data.setName(jsonVal['result']['name']);
+                            _saveUserData();
+                            print('${data.name} : ${data.id}');
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                          }
                         });
-                      },
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(labelText: 'Пароль'),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          _pass = value;
-                        });
-                      },
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          Api.authorization(PostBody(
-                                  data: Api.makeData(_phone, _token, _pass),
-                                  name: '',
-                                  uid: device.deviceData['uid'],
-                                  deviceName: device.deviceData['deviceName'],
-                                  system: device.deviceData['system'],
-                                  systemVersion:
-                                      device.deviceData['systemVersion']))
-                              .then((value) {
-                            var jsonVal = json.decode(value);
-                            if (jsonVal['error']) {
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text(jsonVal['errorDescription']),
-                                backgroundColor: Colors.red,
-                              ));
-                            } else {
-                              UserData data = UserData();
-                              data.setId(jsonVal['result']['id']);
-                              data.setName(jsonVal['result']['name']);
-                              Navigator.pushReplacementNamed(context, '/Home');
-                            }
-                          });
-                        }
-                      },
-                      child: Text('Войти'),
-                    ),
-                    RaisedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/Registration'),
-                      child: Text('Регистрация'),
-                    ),
-                    FlatButton(
-                        onPressed: () =>
-                            Navigator.pushReplacementNamed(context, '/Home'),
-                        color: Colors.transparent,
-                        textColor: Colors.blue,
-                        child: Text("Войти как гость")),
-                  ]),
+                      }
+                    },
+                    child: Text('Войти'),
+                  ),
+                  // RaisedButton(
+                  //   onPressed: () =>
+                  //       Navigator.pushNamed(context, '/Registration'),
+                  //   child: Text('Регистрация'),
+                  // ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  _saveUserData() async {
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('user', UserData().toJson().toString());
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> asd = {"_id": UserData().id, "_name": UserData().name};
+
+    await prefs.setString('user', json.encode(asd));
+    print(await prefs.getString('user'));
   }
 }

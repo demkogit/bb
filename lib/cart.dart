@@ -7,6 +7,7 @@ class Cart {
   }
 
   List<ProductItem> get productList => _products;
+  double _total = 0.0;
 
   void add(ProductItem product) {
     //_products.firstWhere((e) => e.count >1, orElse: () => 0);
@@ -18,6 +19,8 @@ class Cart {
     product.increaseCount();
 
     print(product.name + " : " + product.count.toString());
+
+    calculateTotal();
   }
 
   void changeCount(ProductItem product) {
@@ -33,6 +36,13 @@ class Cart {
       else
         tempProduct.count = product.count;
     }
+    calculateTotal();
+  }
+
+  void setProductList(List<ProductItem> products) {
+    productList.insertAll(0, products);
+
+    calculateTotal();
   }
 
   void remove(ProductItem product) {
@@ -47,6 +57,8 @@ class Cart {
       }
     }
     print(product.name + " : " + product.count.toString());
+
+    calculateTotal();
   }
 
   int get itemCount => _products.length;
@@ -54,5 +66,14 @@ class Cart {
   void clearProductList() {
     productList.forEach((e) => e.count = 0);
     productList.clear();
+
+    calculateTotal();
+  }
+
+  double get total => _total;
+
+  void calculateTotal() {
+    _total = 0.0;
+    productList.forEach((e) => _total += e.count * e.price);
   }
 }
