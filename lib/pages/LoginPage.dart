@@ -29,7 +29,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    var textEditingController = TextEditingController();
+    var phoneController = TextEditingController();
+    var passController = TextEditingController();
     var maskTextInputFormatter = MaskTextInputFormatter(
         mask: "(###) ###-##-##", filter: {"#": RegExp(r'[0-9]')});
 
@@ -64,12 +65,12 @@ class _LoginPageState extends State<LoginPage> {
                   // ),
                   TextFormField(
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter some text';
+                      if (value.isEmpty) return 'Поле не должно быть пустым';
                       if (maskTextInputFormatter.getUnmaskedText().length != 10)
                         return 'Неверный формат номера';
                       return null;
                     },
-                    //controller: textEditingController,
+                    controller: phoneController,
                     inputFormatters: [maskTextInputFormatter],
                     autocorrect: false,
                     keyboardType: TextInputType.phone,
@@ -84,22 +85,25 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   TextFormField(
+                    controller: passController,
                     obscureText: true,
                     decoration: InputDecoration(labelText: 'Пароль'),
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Поле не должно быть пустым';
                       }
                       return null;
                     },
-                    onChanged: (value) {
-                      setState(() {
-                        _pass = value;
-                      });
-                    },
+                    // onChanged: (value) {
+                    //   setState(() {
+                    //     _pass = value;
+                    //   });
+                    // },
                   ),
                   RaisedButton(
                     onPressed: () {
+                      print('phone $_phone');
+                      print('text ${maskTextInputFormatter.getUnmaskedText()}');
                       if (_formKey.currentState.validate()) {
                         Api.authorization(PostBody(
                                 data: Api.makeData(

@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:bb/PostBody.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Api.dart';
+import '../UserData.dart';
 import '../device.dart';
 import 'LoginPage.dart';
 
@@ -47,7 +49,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    var textEditingController = TextEditingController();
+    var phoneController = TextEditingController();
+    var nameController = TextEditingController();
+    var passController = TextEditingController();
+    var passRepeatController = TextEditingController();
     var maskTextInputFormatter = MaskTextInputFormatter(
         mask: "(###) ###-##-##", filter: {"#": RegExp(r'[0-9]')});
 
@@ -68,30 +73,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 children: <Widget>[
                   Center(
                     child: TextFormField(
+                      controller: nameController,
                       decoration: InputDecoration(labelText: 'Имя'),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Please enter some text';
+                          return 'Поле не должно быть пустым';
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        setState(() {
-                          _name = value;
-                        });
-                      },
+                      // onChanged: (value) {
+                      //   setState(() {
+                      //     _name = value;
+                      //   });
+                      // },
                     ),
                   ),
                   TextFormField(
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter some text';
+                      if (value.isEmpty) return 'Поле не должно быть пустым';
                       if (maskTextInputFormatter.getUnmaskedText().length !=
                           10) {
                         return 'Неверный формат номера';
                       }
                       return null;
                     },
-                    //controller: textEditingController,
+                    controller: phoneController,
                     inputFormatters: [maskTextInputFormatter],
                     autocorrect: false,
                     keyboardType: TextInputType.phone,
@@ -123,32 +129,36 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   //   },
                   // ),
                   TextFormField(
+                    controller: passController,
                     decoration: InputDecoration(labelText: 'Пароль'),
                     obscureText: true,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter some text';
-                      if (value != _passRepeat) return 'Пароли не совпадают';
+                      if (value.isEmpty) return 'Поле не должно быть пустым';
+                      if (value != passRepeatController.text)
+                        return 'Пароли не совпадают';
                       return null;
                     },
-                    onChanged: (value) {
-                      setState(() {
-                        _pass = value;
-                      });
-                    },
+                    // onChanged: (value) {
+                    //   setState(() {
+                    //     _pass = value;
+                    //   });
+                    // },
                   ),
                   TextFormField(
+                    controller: passRepeatController,
                     decoration: InputDecoration(labelText: 'Повтор пароля'),
                     obscureText: true,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter some text';
-                      if (value != _pass) return 'Пароли не совпадают';
+                      if (value.isEmpty) return 'Поле не должно быть пустым';
+                      if (value != passController.text)
+                        return 'Пароли не совпадают';
                       return null;
                     },
-                    onChanged: (value) {
-                      setState(() {
-                        _passRepeat = value;
-                      });
-                    },
+                    // onChanged: (value) {
+                    //   setState(() {
+                    //     _passRepeat = value;
+                    //   });
+                    // },
                   ),
                   DropdownButton<Map<String, dynamic>>(
                     value: _selectedLocation,
@@ -173,8 +183,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                         maskTextInputFormatter
                                             .getUnmaskedText(),
                                     _token,
-                                    _pass),
-                                name: _name,
+                                    passController.text),
+                                name: nameController.text,
                                 uid: device.deviceData['uid'],
                                 deviceName: device.deviceData['deviceName'],
                                 system: device.deviceData['system'],
@@ -183,7 +193,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .then(
                           (value) {
                             //проверка ответа
-                            if (json.decode(value)['error']) {
+                            var jsonVal = json.decode(value);
+                            if (jsonVal['error']) {
                               _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 content: Text(
                                     json.decode(value)['errorDescription']),
@@ -191,6 +202,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               ));
                             } else {
                               // тут нужно сохранить данные о пользователе и возвращаться на страницу логина
+                              UserData data = UserData();
+                              data.setId(jsonVal['result']['id']);
+                              data.setName(jsonVal['result']['name']);
+                              _saveUserData();
 
                               Navigator.pop(context);
                             }
@@ -216,5 +231,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ),
       ),
     );
+  }
+
+  _saveUserData() async {
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('user', UserData().toJson().toString());
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> asd = {"_id": UserData().id, "_name": UserData().name};
+
+    await prefs.setString('user', json.encode(asd));
+    print(await prefs.getString('user'));
   }
 }

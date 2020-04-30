@@ -34,6 +34,7 @@ class MyAppState extends State<MyApp> {
         ChangeNotifierProvider<ProductCounter>.value(value: ProductCounter())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         routes: <String, WidgetBuilder>{
           '/Home': (BuildContext context) => App(),
           '/Login': (BuildContext context) => LoginPage(),

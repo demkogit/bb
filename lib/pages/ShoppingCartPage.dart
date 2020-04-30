@@ -33,17 +33,7 @@ class ShoppingCartPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Закажи"),
         actions: <Widget>[
-          FlatButton(
-            child: Text('Tap'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => RegistrationPage(),
-                ),
-              );
-            },
-          ),
+          
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
