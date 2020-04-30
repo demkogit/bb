@@ -65,11 +65,11 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) return 'Please enter some text';
-                      if (textEditingController.text.length != 10)
+                      if (maskTextInputFormatter.getUnmaskedText().length != 10)
                         return 'Неверный формат номера';
                       return null;
                     },
-                    // controller: textEditingController,
+                    //controller: textEditingController,
                     inputFormatters: [maskTextInputFormatter],
                     autocorrect: false,
                     keyboardType: TextInputType.phone,
@@ -102,7 +102,12 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         Api.authorization(PostBody(
-                                data: Api.makeData('8' + _phone, _token, _pass),
+                                data: Api.makeData(
+                                    '8' +
+                                        maskTextInputFormatter
+                                            .getUnmaskedText(),
+                                    _token,
+                                    _pass),
                                 name: '',
                                 uid: device.deviceData['uid'],
                                 deviceName: device.deviceData['deviceName'],
