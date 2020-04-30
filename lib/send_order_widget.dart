@@ -108,7 +108,9 @@ class SendOrderWidget extends StatelessWidget {
     if (jsonString != null) {
       print(jsonString);
       Map<String, dynamic> map = json.decode(jsonString);
-      UserData.fromJson(map);
+      UserData data = UserData();
+      data.setId(map['_id']);
+      data.setName(map['_name']);
       print('${UserData().id} : ${UserData().name}');
       return true;
     } else {
