@@ -26,25 +26,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      //body: Image.asset('images/img.jpg'),
-      body: Padding(
-        padding: EdgeInsets.all(12),
-        child: Card(
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text('asd'),
-              ),
-              Expanded(
-                child: TextField(
-                  enableInteractiveSelection: false,
-                  textInputAction: TextInputAction.done,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: Image.asset('images/img.jpg'),
     );
   }
 }
