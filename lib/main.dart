@@ -4,6 +4,7 @@ import 'package:bb/LocalDataBase/DBManager.dart';
 import 'package:bb/ProductCounter.dart';
 import 'package:bb/ProductItem.dart';
 import 'package:bb/cart_bloc.dart';
+import 'package:bb/data_model_done.dart';
 import 'package:bb/pages/LoginPage.dart';
 import 'package:bb/pages/RegistrationPage.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +34,17 @@ class MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider<ProductCounter>.value(value: ProductCounter())
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: <String, WidgetBuilder>{
-          '/Home': (BuildContext context) => App(),
-          '/Login': (BuildContext context) => LoginPage(),
-          '/Registration': (BuildContext context) => RegistrationPage(),
-        },
-        home: App(),
+      child: Provider(
+        create: (context) => new DataModelBloc(), //DI
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          routes: <String, WidgetBuilder>{
+            '/Home': (BuildContext context) => App(),
+            '/Login': (BuildContext context) => LoginPage(),
+            '/Registration': (BuildContext context) => RegistrationPage(),
+          },
+          home: App(),
+        ),
       ), //App(),
     );
   }

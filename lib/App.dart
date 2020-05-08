@@ -19,7 +19,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   //int _selectedPage = 0;
   //static GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
-  //var _pageOptions = [HomePage(globalKey), ShoppingCartPage(globalKey)];
+  //var _pageOptions= [HomePage(globalKey), ShoppingCartPage(globalKey)];
   int _currentTab = 2;
   Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
     0: GlobalKey<NavigatorState>(), // HomePage()

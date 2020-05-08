@@ -54,7 +54,7 @@ class Api {
     }
   }
 
-  static Future getCatalogGroupList(int idShop) async {
+  static Future<String> getCatalogGroupList(int idShop) async {
     try {
       var url = baseUrl + '/catalogGroupList?idShop=' + idShop.toString();
       HttpClient client = HttpClient();
