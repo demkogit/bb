@@ -20,7 +20,9 @@ class _MainPageState extends State<MainPage> {
                 builder: (BuildContext context) => LoginPage(),
               ),
             ),
-            child: GestureDetector(
+            child: Container(
+              width: 30,
+              height: 30,
               child: Image.asset('images/door.png'),
             ),
           ),
