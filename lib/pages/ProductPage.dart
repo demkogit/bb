@@ -155,14 +155,14 @@ class ProductPage extends StatelessWidget {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        'Название',
+                        _product.name,
                         style: TextStyle(fontSize: 20.0),
                       ),
                       Divider(),
                       Row(
                         children: [
                           Text(
-                            'Цена: ',
+                            'Цена: ${_product.price}р./${_product.unit}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text('20р/1шт'),
@@ -174,7 +174,7 @@ class ProductPage extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                          '<описание>asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdaa'),
+                          '<описание>'),
                     ],
                   ),
                 ),
